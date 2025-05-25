@@ -48,6 +48,18 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Update()
     {
+
+        if (Input.GetButtonDown("Cancel"))
+        {
+            var pauseBehaviour = GameObject.FindObjectOfType<PauseScreenBehaviour>();
+
+            pauseBehaviour.SetPauseMenu(!PauseScreenBehaviour.paused);
+        }
+        if (PauseScreenBehaviour.paused)
+        {
+            return;
+        }
+
 #if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
@@ -69,6 +81,11 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (PauseScreenBehaviour.paused)
+        {
+            return;
+        }
+
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
 
 #if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_EDITOR
