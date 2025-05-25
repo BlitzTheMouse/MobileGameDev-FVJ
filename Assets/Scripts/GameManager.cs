@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("How many tiles to spawn with no obstacles")]
     public int initNoObstacles = 4;
 
-    private Vector3 nextTileLocation;
+    public Vector3 nextTileLocation;
     private Quaternion nextTileRotation;
 
     // Start is called before the first frame update
