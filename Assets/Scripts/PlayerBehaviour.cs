@@ -30,6 +30,8 @@ public class PlayerBehaviour : MonoBehaviour
     [Range(0, 10)]
     public float rollSpeed = 5;
 
+    private MobileJoystick joystick;
+
     public enum MobileHorizMovement
     {
         Accelerometer,
@@ -44,6 +46,8 @@ public class PlayerBehaviour : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
+
+        joystick = GameObject.FindObjectOfType<MobileJoystick>();
     }
 
     private void Update()
@@ -88,11 +92,20 @@ public class PlayerBehaviour : MonoBehaviour
 
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
 
+        if (joystick && joystick.axisValue.x != 0)
+        {
+            horizontalSpeed = joystick.axisValue.x *
+            dodgeSpeed;
+        }
+
 #if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_EDITOR
         if (Input.GetMouseButton(0))
         {
-            var screenPos = Input.mousePosition;
-            horizontalSpeed = CalculateMovement(screenPos);
+            if (!joystick)
+            {
+                var screenPos = Input.mousePosition;
+                horizontalSpeed = CalculateMovement(screenPos);
+            }
         }
 #elif UNITY_IOS || UNITY_ANDROID
 
@@ -101,7 +114,7 @@ public class PlayerBehaviour : MonoBehaviour
             horizontalSpeed = Input.acceleration.x * dodgeSpeed;
         }
 
-        if (Input.touchCount > 0)
+        if (!joystick && Input.touchCount > 0)
         {
             if (horizMovement == MobileHorizMovement.ScreenTouch)
             {
