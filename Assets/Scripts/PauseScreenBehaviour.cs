@@ -13,6 +13,8 @@ public class PauseScreenBehaviour : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        Time.timeScale = 1;
     }
 
     public void SetPauseMenu(bool isPaused)
