@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement; // LoadScene
 
 public class ObstacleBehaviour : MonoBehaviour
 {
-    public float waitTime = 2.0f;
+    public float waitTime = 0.5f;
     public GameObject explosion;
 
     private void OnCollisionEnter(Collision collision)

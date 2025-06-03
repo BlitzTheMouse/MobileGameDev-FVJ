@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic; //List
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,6 +24,14 @@ public class GameManager : MonoBehaviour
 
     public Vector3 nextTileLocation;
     private Quaternion nextTileRotation;
+
+    public TextMeshProUGUI scoreText;
+
+    public TextMeshProUGUI highscoretext;
+
+    int highscore;
+
+    public float score = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +81,50 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        score += Time.deltaTime * 5;
+        highscore = (int)score;
+        scoreText.text = highscore.ToString();
+
+        if (PlayerPrefs.GetInt("score") <= highscore)
+        {
+            PlayerPrefs.SetInt("score", highscore);
+        }
+        highscoretext.text = PlayerPrefs.GetInt("score").ToString();
+
+    }
+    /*public void highscorefun()
+    {
+
+        highscoretext.text = PlayerPrefs.GetInt("score").ToString();
+    }*/
+
+    public float Score
+    {
+        get
+        {
+            return score;
+        }
+        set
+        {
+            score = value;
+            if (scoreText == null)
+            {
+                Debug.LogError("Score Text is not set. " + "Please go to the Inspector and assign it");
+                return;
+            }
+            scoreText.text = string.Format("{0:0}", score);
+
+            int formattedScore = Mathf.FloorToInt(score);
+
+            if (formattedScore > PlayerPrefs.GetInt("score", 0))
+            {
+                PlayerPrefs.SetInt("score", formattedScore);
+            }
+        }
+    }
+
+    public void ScoreDelete()
+    {
+        PlayerPrefs.DeleteAll();
     }
 }

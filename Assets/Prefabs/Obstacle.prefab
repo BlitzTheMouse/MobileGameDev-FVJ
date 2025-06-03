@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2648ef74083b3d488a7aae10622abef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitTime: 2
+  waitTime: 0.5
   explosion: {fileID: 1918789421438426760, guid: 4373009fa1144c84190f336f66eaf4e9, type: 3}
 --- !u!1001 &6885458260677777764
 PrefabInstance:

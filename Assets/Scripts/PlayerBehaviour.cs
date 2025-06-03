@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerBehaviour : MonoBehaviour
@@ -20,6 +21,11 @@ public class PlayerBehaviour : MonoBehaviour
 
     [Tooltip("The maximum size (in Unity units) that the player should be")]
     public float maxScale = 3.0f;
+
+    [Header("Object References")]
+    public TextMeshProUGUI scoreText;
+
+    public float score = 0;
 
     private float currentScale = 1;
 
@@ -48,6 +54,8 @@ public class PlayerBehaviour : MonoBehaviour
         minSwipeDistancePixels = minSwipeDistance * Screen.dpi;
 
         joystick = GameObject.FindObjectOfType<MobileJoystick>();
+
+        score = 0;
     }
 
     private void Update()
@@ -82,6 +90,7 @@ public class PlayerBehaviour : MonoBehaviour
 #endif
     }
 
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -89,6 +98,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             return;
         }
+
+        Score += Time.deltaTime;
 
         var horizontalSpeed = Input.GetAxis("Horizontal") * dodgeSpeed;
 
@@ -136,7 +147,7 @@ public class PlayerBehaviour : MonoBehaviour
         else if (touch.phase == TouchPhase.Ended)
         {
             Vector2 touchEnd = touch.position;
-            
+
             float x = touchEnd.x - touchStart.x;
             if (Mathf.Abs(x) < minSwipeDistancePixels)
             {
@@ -154,7 +165,7 @@ public class PlayerBehaviour : MonoBehaviour
             }
             RaycastHit hit;
 
-            if (!rb.SweepTest(moveDirection, out hit,swipeMove))
+            if (!rb.SweepTest(moveDirection, out hit, swipeMove))
             {
                 var movement = moveDirection * swipeMove;
                 var newPos = rb.position + movement;
@@ -200,7 +211,7 @@ public class PlayerBehaviour : MonoBehaviour
 
             float prevTDeltaMag = (t0Prev - t1Prev).magnitude;
             float tDeltaMag = (t0Pos - t1Pos).magnitude;
-           
+
             float deltaMagDiff = prevTDeltaMag - tDeltaMag;
 
             float newScale = currentScale;
@@ -221,5 +232,35 @@ public class PlayerBehaviour : MonoBehaviour
         {
             hit.transform.SendMessage("PlayerTouch", SendMessageOptions.DontRequireReceiver);
         }
+    }
+
+    public float Score
+    {
+        get
+        {
+            return score;
+        }
+        set
+        {
+            score = value;
+            if (scoreText == null)
+            {
+                Debug.LogError("Score Text is not set. " + "Please go to the Inspector and assign it");
+                return;
+            }
+            scoreText.text = string.Format("{0:0}", score);
+
+            int formattedScore = Mathf.FloorToInt(score);
+
+            if (formattedScore > PlayerPrefs.GetInt("score", 0))
+            {
+                PlayerPrefs.SetInt("score", formattedScore);
+            }
+        }
+    }
+
+    public void ScoreDelete ()
+    {
+        PlayerPrefs.DeleteAll();
     }
 }
