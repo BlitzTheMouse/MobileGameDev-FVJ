@@ -26,7 +26,16 @@ public class PauseScreenBehaviour : MonoBehaviour
 
         Time.timeScale = (paused) ? 0 : 1;
 
-        pauseMenu.SetActive(paused);
+        //pauseMenu.SetActive(paused);
+
+        if (paused)
+        {
+            SlideMenuIn(pauseMenu);
+        }
+        else
+        {
+            SlideMenuOut(pauseMenu);
+        }
 
         onScreenControls.SetActive(!paused);
     }
@@ -35,4 +44,36 @@ public class PauseScreenBehaviour : MonoBehaviour
     {
         SetPauseMenu(false);
     }
+    public void SlideMenuIn(GameObject obj)
+    {
+        obj.SetActive(true);
+        var rt = obj.GetComponent<RectTransform>();
+        if (rt)
+        {
+            var pos = rt.position;
+            pos.x = -Screen.width / 2;
+            rt.position = pos;
+
+            var tween = LeanTween.moveX(rt, 0, 1.5f);
+            tween.setEase(LeanTweenType.easeInOutExpo);
+            tween.setIgnoreTimeScale(true);
+        }
+    }
+
+    public void SlideMenuOut(GameObject obj)
+    {
+        var rt = obj.GetComponent<RectTransform>();
+        if (rt)
+        {
+            var tween = LeanTween.moveX(rt, Screen.width / 2, 0.5f);
+            tween.setEase(LeanTweenType.easeOutQuad);
+            tween.setIgnoreTimeScale(true);
+
+            tween.setOnComplete(() =>
+            {
+                obj.SetActive(false);
+            });
+        }
+    }
+
 }
